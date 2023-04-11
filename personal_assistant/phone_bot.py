@@ -18,7 +18,7 @@ if p.exists():
 
 
 def save_to_pickle():
-    """ Save address book in pickle file"""
+    """Save address book in pickle file"""
 
     with open("phone_data.bin", "wb") as fh:
         pickle.dump(phone_book.data, fh)
@@ -35,7 +35,6 @@ def say_goodbye(s=None):
 # Add new contact to address book
 @input_error
 def add_contact(value):
-
     name, *phones = value.lower().title().strip().split()
     name = Name(name.lower().title())
 
@@ -56,22 +55,21 @@ def find_contact(name):
     contact = phone_book.get_contact(name)
     return contact
 
+
 # The function displays all entries in the phone book with the 'show all' command.
 @input_error
 def show_all(s):
-
     if len(phone_book) == 0:
         return "\nPhone book is empty.\n"
-    result = ''
+    result = ""
     for record in phone_book.values():
-       result += f"{record.contacts()}\n"
+        result += f"{record.contacts()}\n"
     return result
 
 
 # Function for deleting a contact from the book.
 @input_error
 def remove_contact(name: str):
-
     record = phone_book[name.strip().lower().title()]
     phone_book.del_contact(record.name.value)
     save_to_pickle()
@@ -81,7 +79,6 @@ def remove_contact(name: str):
 # Function for adding a contact's phone.
 @input_error
 def add_phone(value):
-
     name, phone = value.lower().strip().title().split()
 
     if name.title() in phone_book:
@@ -95,7 +92,6 @@ def add_phone(value):
 # Function to delete a contact's phone.
 @input_error
 def remove_phone(value):
-
     name, phone = value.lower().title().strip().split()
 
     if name.title() in phone_book:
@@ -109,12 +105,10 @@ def remove_phone(value):
 # Function for replacing the phone of a contact.
 @input_error
 def change_ph(value: str):
-
     name, old_phone, new_phone = value.split()
 
     if name.strip().lower().title() in phone_book:
-        phone_book[name.strip().lower().title()].change_phone(
-            old_phone, new_phone)
+        phone_book[name.strip().lower().title()].change_phone(old_phone, new_phone)
         save_to_pickle()
     else:
         return f"\nContact {name.title()} does not exists\n"
@@ -123,7 +117,6 @@ def change_ph(value: str):
 # The function displays the phone number of the subscriber whose name was in the 'phone ...' command.
 @input_error
 def contact(name):
-
     if name.title() in phone_book:
         record = phone_book[name.title()]
         return record.contacts()
@@ -134,7 +127,6 @@ def contact(name):
 # Function for adding an e-mail contact.
 @input_error
 def add_em(value):
-
     name, email = value.split()
     name = name.title()
     if name.title() in phone_book:
@@ -148,7 +140,6 @@ def add_em(value):
 # Function for deleting an e-mail contact.
 @input_error
 def remove_em(value):
-
     name, email = value.split()
     name = name.title()
     email = email.lower()
@@ -163,7 +154,6 @@ def remove_em(value):
 # Function for replacing e-mail contact.
 @input_error
 def change_em(value: str):
-
     name, old_em, new_em = value.split()
 
     if name.strip().lower().title() in phone_book:
@@ -177,7 +167,6 @@ def change_em(value: str):
 # Function for adding a contact address.
 @input_error
 def add_adrs(value):
-
     name, address = value.split(" ", 1)
     name = name.title()
     if name.title() in phone_book:
@@ -191,7 +180,6 @@ def add_adrs(value):
 # Function for changing the address of a contact.
 @input_error
 def change_adrs(value):
-
     name, address = value.split(" ", 1)
     name = name.title()
     if name.strip().lower().title() in phone_book:
@@ -205,7 +193,6 @@ def change_adrs(value):
 # Function to delete contact address.
 @input_error
 def remove_adrs(value):
-
     name = value.lower().title().strip()
     if name.title() in phone_book:
         phone_book[name.title()].delete_address()
@@ -218,7 +205,6 @@ def remove_adrs(value):
 # A function to delete a contact's birthday.
 @input_error
 def remove_bd(value):
-
     name = value.lower().title().strip()
 
     if name.title() in phone_book:
@@ -232,7 +218,6 @@ def remove_bd(value):
 # Function to add a contact's birthday to the book.
 @input_error
 def add_contact_birthday(value):
-
     name, birthday = value.lower().strip().split()
 
     if name.title() in phone_book:
@@ -246,7 +231,6 @@ def add_contact_birthday(value):
 # The function displays the number of days until the contact's birthday.
 @input_error
 def days_to_bd(name):
-
     if name.title() in phone_book:
         if not phone_book[name.title()].birthday is None:
             days = phone_book[name.title()].days_to_birthday()
@@ -260,8 +244,7 @@ def days_to_bd(name):
 # The function displays the list of birthday people for the period.
 @input_error
 def get_birthdays(value=None):
-
-    if value.strip() == '':
+    if value.strip() == "":
         period = 7
     else:
         period = int(value.strip())
@@ -271,7 +254,6 @@ def get_birthdays(value=None):
 # Function for changing the birthday of a contact.
 @input_error
 def change_bd(value):
-
     name, new_birthday = value.lower().strip().split()
     if name.title() in phone_book:
         phone_book[name.title()].delete_birthday()
@@ -281,10 +263,10 @@ def change_bd(value):
     else:
         return f"\nContact {name.title()} does not exist.\n"
 
+
 # Search contact where there is 'text_to_search'.
 @input_error
 def search(text_to_search: str):
-
     return phone_book.search_contact(text_to_search)
 
 
@@ -338,53 +320,51 @@ handlers = {
     "birthdays": get_birthdays,
     "change address": change_adrs,
     "remove address": remove_adrs,
-    "add address": add_adrs
+    "add address": add_adrs,
 }
 
-completer = NestedCompleter.from_nested_dict({
-    "add": {
-        "contact": {"<name> "},
-        "phone": {"<name> <one phone>"},
-        "email": {"<name> <e-mail>"},
-        "address": {"<name> <address>"},
-        "birthday": {"<name> <d/m/yyyy>"},
-    },
-    "remove": {
-        "contact": {"<name>"},
-        "phone": {"<name> <old phone>"},
-        "email": {"<name>"},
-        "address": {"<name>"},
-        "birthday": {"<name>"},
-    },
-    "change": {
-        "phone": {"<name> <old phone> <new phone>"},
-        "email": {"<name> <new e-mail>"},
-        "birthday": {"<name> <d/m/yyyy>"},
-        "address": {"<name> <new address>"},
-    },
-    
-    "phone": {"<name>"},
-    "search": {
-        "contact": {"<name>"},
-    },
-
-    "days to birthday": {"<name>"},
-    "birthdays": {"<number of days>"},
-    "hello": None,
-    "help": None,
-    "menu": None,
-    "show book": None
-})
+completer = NestedCompleter.from_nested_dict(
+    {
+        "add": {
+            "contact": {"<name> "},
+            "phone": {"<name> <one phone>"},
+            "email": {"<name> <e-mail>"},
+            "address": {"<name> <address>"},
+            "birthday": {"<name> <d/m/yyyy>"},
+        },
+        "remove": {
+            "contact": {"<name>"},
+            "phone": {"<name> <old phone>"},
+            "email": {"<name>"},
+            "address": {"<name>"},
+            "birthday": {"<name>"},
+        },
+        "change": {
+            "phone": {"<name> <old phone> <new phone>"},
+            "email": {"<name> <new e-mail>"},
+            "birthday": {"<name> <d/m/yyyy>"},
+            "address": {"<name> <new address>"},
+        },
+        "phone": {"<name>"},
+        "search": {
+            "contact": {"<name>"},
+        },
+        "days to birthday": {"<name>"},
+        "birthdays": {"<number of days>"},
+        "hello": None,
+        "help": None,
+        "menu": None,
+        "show book": None,
+    }
+)
 
 
 def main():
-    
     while True:
-      
-        command = prompt('(ADDRESS BOOK) Enter command >>> ', completer=completer)
+        command = prompt("(ADDRESS BOOK) Enter command >>> ", completer=completer)
 
         command = command.strip().lower()
-        
+
         if command in ("menu"):
             say_goodbye()
             break
@@ -393,10 +373,10 @@ def main():
             for key in handlers:
                 if key in command:
                     match = True
-                    print(handlers[key](command[len(key):].strip()))
+                    print(handlers[key](command[len(key) :].strip()))
                     break
             if not match:
-                    print("\nEnter a valid command. Type 'help' for additional info\n")
+                print("\nEnter a valid command. Type 'help' for additional info\n")
 
 
 if __name__ == "__main__":

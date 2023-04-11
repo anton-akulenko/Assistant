@@ -7,7 +7,6 @@ import re
 
 
 class Field:
-
     def __init__(self, value):
         self._value = value
 
@@ -24,17 +23,22 @@ class Field:
 
 
 class Name(Field):
-
     def __str__(self):
         return self._value.title()
 
 
 class Phone(Field):
-
     @staticmethod
     def validate_phone(phone):
-        new_phone = str(phone).strip().replace("+", "").replace(" ", "")\
-            .replace("(", "").replace(")", "").replace("-", "")
+        new_phone = (
+            str(phone)
+            .strip()
+            .replace("+", "")
+            .replace(" ", "")
+            .replace("(", "")
+            .replace(")", "")
+            .replace("-", "")
+        )
         if not new_phone.isdigit():
             raise ValueError("The phone number should contain only numbers!")
         else:
@@ -52,7 +56,6 @@ class Phone(Field):
 
 
 class Email(Field):
-
     @staticmethod
     def validate_email(email):
         pattern = r"^[-\w\.]+@([-\w]+\.)+[-\w]{2,}$"
@@ -70,13 +73,11 @@ class Email(Field):
 
 
 class Address(Field):
-
     def __str__(self):
         return self._value
 
 
 class Birthday(Field):
-
     @property
     def value(self):
         return self._value
@@ -85,13 +86,12 @@ class Birthday(Field):
     def value(self, value):
         try:
             if value != None:
-                self._value = datetime.strptime(value, '%d/%m/%Y').date()
+                self._value = datetime.strptime(value, "%d/%m/%Y").date()
         except ValueError:
-            print(f'Please, input the date in format dd/mm/yyyy ')
+            print(f"Please, input the date in format dd/mm/yyyy ")
 
 
 class Contact:
-
     def __init__(self, name, phones, emails=None, birthday=None, address=None):
         self.name = name
         self.birthday = birthday
@@ -102,12 +102,11 @@ class Contact:
         self.emails = emails
 
         self.phones = phones
-        
+
         # if notations is None:
         #     notations = []
         # self.notations = notations
 
-    
     # Phone
     def add_phone(self, phone):
         phone = Phone(phone)
@@ -151,16 +150,16 @@ class Contact:
         self.birthday = birthday
 
     def delete_birthday(self):
-        #Delete date of birth
+        # Delete date of birth
         self.birthday = None
-        
+
     # Days until user's birthday
     def days_to_birthday(self):
-        
         if self.birthday.value:
             try:
                 birthday_value = datetime.strptime(
-                    self.birthday.value, '%d/%m/%Y').date()
+                    self.birthday.value, "%d/%m/%Y"
+                ).date()
                 current_date = datetime.now().date()
                 user_date = birthday_value.replace(year=current_date.year)
                 self.delta_days = user_date - current_date
@@ -173,9 +172,9 @@ class Contact:
                     if 0 < self.delta_days.days:
                         return f"\n{self.name}'s birthday will be in {self.delta_days.days} days.\n"
             except ValueError:
-                return f'\nPlease, input date in format dd/mm/yyyy\n '
+                return f"\nPlease, input date in format dd/mm/yyyy\n "
         else:
-            return f'\nDate of birth is not found. Add day of birth.\n '
+            return f"\nDate of birth is not found. Add day of birth.\n "
 
     # Working with Address
     def add_address(self, address):
@@ -184,14 +183,14 @@ class Contact:
 
     def delete_address(self):
         self.address = None
-     
+
     # def add_notations(self, notation):
     #     self.notations.append(notation)
 
     def contacts(self):
         phon = []
-        result_phones = ''
-        result_emails = ''
+        result_phones = ""
+        result_emails = ""
         if len(self.phones) > 0:
             for i in self.phones:
                 phon.append(str(i))
@@ -202,18 +201,18 @@ class Contact:
                 em.append(str(i))
                 result_emails = ", ".join(em)
 
-        return f"\n\tname: {str(self.name.value)};\n" \
-               f"\tphone: {result_phones};\n" \
-               f"\te-mail: {result_emails};\n" \
-               f"\tbirthday: {self.birthday};\n" \
-               f"\taddress: {self.address};\n"\
+        return (
+            f"\n\tname: {str(self.name.value)};\n"
+            f"\tphone: {result_phones};\n"
+            f"\te-mail: {result_emails};\n"
+            f"\tbirthday: {self.birthday};\n"
+            f"\taddress: {self.address};\n"
             "\t********************"
+        )
 
-
-    
     def __str__(self):
         return self.contacts()
-    
+
     def __repr__(self):
         return self.contacts()
 
@@ -223,7 +222,7 @@ class ContactBook(UserDict):
         self.data[contact.name.value] = contact
 
     def get_contact(self, name):
-        found = list(filter(lambda x: x[0].lower() == name.lower() , self.data.items()))  
+        found = list(filter(lambda x: x[0].lower() == name.lower(), self.data.items()))
         if not len(found):
             return f"No contact with name '{name}' exists"
         return found[0][1]
@@ -240,9 +239,8 @@ class ContactBook(UserDict):
 
     # Search for contacts based on the user's search query
     def search_contact(self, user_search):
-        
         data = []
-     
+
         for value in self.data.values():
             result = str(value.name).lower().find(user_search.lower())
             if result != -1:
@@ -251,13 +249,12 @@ class ContactBook(UserDict):
 
     # A list of users who have a birthday coming up soon
     def get_birthdays_per_range(self, range_of_days=7):
-
         near_birthdays = {}
         current_date = datetime.now().date()
         for name, value in self.data.items():
             if value.birthday:
                 user_date = value.birthday.value
-                user_date = datetime.strptime(user_date, '%d/%m/%Y').date()
+                user_date = datetime.strptime(user_date, "%d/%m/%Y").date()
                 user_date = user_date.replace(year=current_date.year)
                 delta_days = user_date - current_date
 
@@ -275,47 +272,45 @@ class ContactBook(UserDict):
 
         print(f"\nNear birthdays for next {range_of_days} days:")
         sorted_near_birthdays = dict(
-            sorted(near_birthdays.items(), key=lambda item: item[1]))
-        result = ''
+            sorted(near_birthdays.items(), key=lambda item: item[1])
+        )
+        result = ""
         for key, value in sorted_near_birthdays.items():
             s = f"{key}'s birthday will be on {str(value)}\n"
             result += s
         return result
 
 
-   
 # if __name__ == "__main__":
 #     contact_book = ContactBook()
 #     contact = Contact(name=Name('Bob'), phones=[Phone("0989009090")],emails=[Email("dvvd@fbb.com")], birthday=Birthday("21/03/1990"), address=Address("dfdvgfddb"))
 #     contact_book.add_contact(contact)
-    
+
 #     contact = Contact(name=Name('Djo'), phones=[Phone("0999009090")], emails=[Email("dvggvd@fbb.com")], birthday=Birthday("22/03/1991"), address=Address("qwqwqwqw"))
 #     contact_book.add_contact(contact)
-    
+
 #     contact = Contact(name=Name('Tom'), phones=[Phone("0967009090")], emails=[Email("dvggvd@fbb.com")], birthday=Birthday("9/10/1992"), address=Address("55555555"))
 #     contact_book.add_contact(contact)
-    
+
 #     contact = Contact(name=Name('Don'), phones=[Phone("0955009090")], emails=[Email("rrrrgvd@fbb.com")], birthday=Birthday("1/1/1989"), address=Address("wwwwwwwww"))
 #     contact_book.add_contact(contact)
-    
-    # print(contact_book.show_book())
-    
-    # print(contact_book.get_birthdays_per_range())
-    
-    # contact = Contact(name=Name('Bob'), phones=[Phone("989009090")], emails=[Email("dvvd@fbb.com")], birthday=Birthday("21/03/1990"), address=Address("dfdvgfddb"))
-    # contact = Contact(name=Name('Bob'), phones=[Phone("0989009090")],emails=[Email("dvvdfbb.com")], birthday=Birthday("21/03/1990"), address=Address("dfdvgfddb"))
 
-    # print(contact_book.search_contact('Don'))
-    
-    # edit_contact = contact_book.search_contact('Don')[-1]
-    # edit_contact.change_phone("0955009090","0951111111")
-    # print(contact_book.show_book())
-    
-    # del_contact = contact_book.del_contact('Tom')
-    # print(contact_book.show_book())
-    
-    # add_notations = contact_book.search_contact('Don')[-1]
-    # add_notations.add_notations("dvcdsvdsvdsvdsv")
-    # print(contact_book.show_book())
-    
-   
+# print(contact_book.show_book())
+
+# print(contact_book.get_birthdays_per_range())
+
+# contact = Contact(name=Name('Bob'), phones=[Phone("989009090")], emails=[Email("dvvd@fbb.com")], birthday=Birthday("21/03/1990"), address=Address("dfdvgfddb"))
+# contact = Contact(name=Name('Bob'), phones=[Phone("0989009090")],emails=[Email("dvvdfbb.com")], birthday=Birthday("21/03/1990"), address=Address("dfdvgfddb"))
+
+# print(contact_book.search_contact('Don'))
+
+# edit_contact = contact_book.search_contact('Don')[-1]
+# edit_contact.change_phone("0955009090","0951111111")
+# print(contact_book.show_book())
+
+# del_contact = contact_book.del_contact('Tom')
+# print(contact_book.show_book())
+
+# add_notations = contact_book.search_contact('Don')[-1]
+# add_notations.add_notations("dvcdsvdsvdsvdsv")
+# print(contact_book.show_book())

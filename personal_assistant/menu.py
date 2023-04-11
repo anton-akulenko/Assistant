@@ -19,7 +19,7 @@ ________________________________________________________________________________
 """
 MENU_ITEMS = ["NOTE BOOK", "ADDRESS BOOK", "FOLDER SORTER", "WEATHER"]
 
-COMMANNDS = ['1', '2', '3', '4', 'exit']
+COMMANNDS = ["1", "2", "3", "4", "exit"]
 
 chat_in_progress = True
 
@@ -28,15 +28,15 @@ from abc import ABC, abstractmethod
 
 
 class Commands(ABC):
-
     @abstractmethod
     def generate_command(self, data):
         pass
 
-class MyCommand(Commands):
 
+class MyCommand(Commands):
     def generate_command(self, command):
         return command
+
 
 def check_command_validity(func):
     def inner():
@@ -45,8 +45,9 @@ def check_command_validity(func):
             return res
         except ValueError as err:
             print(err.args[0])
-        
+
     return inner
+
 
 def create_menu_table():
     menu_table = PrettyTable(["ID", "MAIN MENU"])
@@ -65,10 +66,12 @@ def terminate_program():
 def greeting():
     print(logo)
 
+
 @check_command_validity
 def start_assistant():
     message = input(
-        "\nPlease, type 1,2,3 or 4 in order to choose your tool, or 'exit' to leave >>> ")
+        "\nPlease, type 1,2,3 or 4 in order to choose your tool, or 'exit' to leave >>> "
+    )
 
     if message not in COMMANNDS:
         message = "This is invalid command.\n"
@@ -85,7 +88,7 @@ def start_assistant():
             # notes_manager()
         case "2":
             book.generate_command(phone_book_manager())
-        case '3':
+        case "3":
             sort_files.generate_command(sorting_manager())
         case "4":
             weather.generate_command(weather_manager())
@@ -106,5 +109,4 @@ def main():
 
 
 if __name__ == "__main__":
-        main()
-
+    main()
